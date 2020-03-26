@@ -5,11 +5,6 @@ import time
 from scipy.spatial.transform import Rotation as Rot
 from scipy.integrate import quad
 
-#TODO 
-# - put in realistic temperatures/fluxes
-# - disk line
-# - deal with time steps
-
 class spot:
 	""" 
     Class for holding a spot object 
@@ -68,17 +63,28 @@ class disk:
 		self.opacity = opacity
 
 class spd_model:
+	""" 
+    Class for model of star spots with a disk
+      
+    Attributes:
+    	r1 (float): inner edge of disk, in stellar radii
+    	r2 (float): outer edge of disk, in stellar radii
+    	inc (float): inclination of disk, relative to observer
+    	opacity (float): opacity of disk. 0 - 1, 1 == completely opaque, 0 == completely transparent
+    """
+
 	def __init__(self,res,bandpass):
-
-		self.n_phi = int(res/2.0)
-		self.n_theta = res
-
-		self.dtheta = 2 * np.pi / self.n_theta
-		self.dphi = np.pi / self.n_phi
+		self.res = res
 		self.bp = bandpass
 
 	#everything to get the model ready to calculate fluxes 
 	def setup(self):
+		self.n_phi = int(self.res/2.0)
+		self.n_theta = self.res
+
+		self.dtheta = 2 * np.pi / self.n_theta
+		self.dphi = np.pi / self.n_phi
+
 		#convert temperature to fluxes, relative to the stars flux
 		self.calc_specific_fluxes()
 
